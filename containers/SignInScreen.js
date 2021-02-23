@@ -7,6 +7,7 @@ import {
    TouchableOpacity,
    Image,
    StyleSheet,
+   ActivityIndicator,
 } from "react-native";
 import axios from "axios";
 import colors from "../assets/colors";
@@ -20,6 +21,7 @@ export default function SignInScreen({ setToken }) {
    const [password, setPassword] = useState("");
    const [missingField, setMissingField] = useState(false);
    const [passwordVisible, setPasswordVisible] = useState(false);
+   const [isLoading, setIsLoading] = useState(false);
 
    return (
       <KeyboardAwareScrollView style={styles.screenContainer}>
@@ -76,30 +78,39 @@ export default function SignInScreen({ setToken }) {
                      All fields are required
                   </Text>
                )}
-               <TouchableOpacity
-                  style={styles.buttonOutline}
-                  activeOpacity="0.5"
-                  title="Sign in"
-                  onPress={async () => {
-                     try {
-                        if (email && password) {
-                           const response = await axios.post(
-                              "https://express-airbnb-api.herokuapp.com/user/log_in",
-                              { email: email, password: password }
-                           );
-                           setToken(response.data.token);
-                           alert("Login successfully!");
-                        } else {
-                           setMissingField(true);
+               {isLoading ? (
+                  <View style={styles.loaderContainer}>
+                     <ActivityIndicator color={red} />
+                  </View>
+               ) : (
+                  <TouchableOpacity
+                     style={styles.buttonOutline}
+                     activeOpacity="0.5"
+                     title="Sign in"
+                     onPress={async () => {
+                        setIsLoading(true);
+                        try {
+                           if (email && password) {
+                              const response = await axios.post(
+                                 "https://express-airbnb-api.herokuapp.com/user/log_in",
+                                 { email: email, password: password }
+                              );
+                              setToken(response.data.token);
+
+                              alert("Login successfully!");
+                           } else {
+                              setMissingField(true);
+                           }
+                        } catch (error) {
+                           console.log(error.response);
+                           alert("Wrong email or password!");
                         }
-                     } catch (error) {
-                        console.log(error.response);
-                        alert("Wrong email or password!");
-                     }
-                  }}
-               >
-                  <Text style={styles.buttonText}>Sign in</Text>
-               </TouchableOpacity>
+                        setIsLoading(false);
+                     }}
+                  >
+                     <Text style={styles.buttonText}>Sign in</Text>
+                  </TouchableOpacity>
+               )}
                <TouchableOpacity
                   activeOpacity="0.5"
                   onPress={() => {
@@ -118,6 +129,11 @@ const styles = StyleSheet.create({
    screenContainer: {
       backgroundColor: white,
       height: "100%",
+   },
+   loaderContainer: {
+      backgroundColor: white,
+      height: "100%",
+      paddingTop: 50,
    },
    mainContainer: {
       alignItems: "center",
@@ -149,7 +165,7 @@ const styles = StyleSheet.create({
       marginVertical: 20,
    },
    submitContainer: {
-      marginTop: 60,
+      marginVertical: 50,
       alignItems: "center",
    },
    missingField: {
@@ -158,7 +174,7 @@ const styles = StyleSheet.create({
    },
    buttonOutline: {
       borderColor: red,
-      borderWidth: 3,
+      borderWidth: 2,
       borderRadius: 30,
       width: 200,
    },
