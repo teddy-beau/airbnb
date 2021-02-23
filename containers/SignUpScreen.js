@@ -7,6 +7,7 @@ import {
    TouchableOpacity,
    Image,
    StyleSheet,
+   ActivityIndicator,
 } from "react-native";
 import axios from "axios";
 import colors from "../assets/colors";
@@ -144,7 +145,7 @@ export default function SignUpScreen({ setToken }) {
                            }
                         } catch (error) {
                            console.log(error.response);
-                           alert("An error occured!");
+                           alert(error.response.data.error);
                         }
                         setIsLoading(false);
                      }}

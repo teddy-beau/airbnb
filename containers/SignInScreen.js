@@ -96,7 +96,6 @@ export default function SignInScreen({ setToken }) {
                                  { email: email, password: password }
                               );
                               setToken(response.data.token);
-
                               alert("Login successfully!");
                            } else {
                               setMissingField(true);
