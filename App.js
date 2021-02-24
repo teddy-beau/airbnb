@@ -3,13 +3,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, Feather, AntDesign } from "@expo/vector-icons";
 // Colors:
 import colors from "./assets/colors";
 const { red, regularGrey, lightGrey, darkGrey, white } = colors;
 // Containers:
 import HomeScreen from "./containers/HomeScreen";
 import RoomScreen from "./containers/RoomScreen";
+import AroundMeScreen from "./containers/AroundMeScreen";
 import ProfileScreen from "./containers/ProfileScreen";
 import SignInScreen from "./containers/SignInScreen";
 import SignUpScreen from "./containers/SignUpScreen";
@@ -72,7 +73,7 @@ export default function App() {
                      <Tab.Navigator
                         tabBarOptions={{
                            activeTintColor: red,
-                           inactiveTintColor: "gray",
+                           inactiveTintColor: regularGrey,
                         }}
                      >
                         <Tab.Screen
@@ -81,7 +82,7 @@ export default function App() {
                               tabBarLabel: "Home",
                               tabBarIcon: ({ color, size }) => (
                                  <Ionicons
-                                    name={"ios-home"}
+                                    name={"ios-home-outline"}
                                     size={size}
                                     color={color}
                                  />
@@ -102,6 +103,15 @@ export default function App() {
                                     name="Room"
                                     options={{
                                        headerTitle: () => <Logo height={28} />,
+                                       headerBackImage: () => (
+                                          <Feather
+                                             name="arrow-left"
+                                             size={28}
+                                             color={regularGrey}
+                                             style={{ marginLeft: 4 }}
+                                          />
+                                       ),
+                                       headerBackTitleVisible: false,
                                     }}
                                  >
                                     {() => <RoomScreen />}
@@ -117,11 +127,32 @@ export default function App() {
                               </Stack.Navigator>
                            )}
                         </Tab.Screen>
-                        {/* <Tab.Screen name="Around me">
-                           <Stack.Screen>
-                              {() => <ProfileScreen />}
-                           </Stack.Screen>
-                        </Tab.Screen> */}
+                        <Tab.Screen
+                           name="Around me"
+                           options={{
+                              tabBarLabel: "Around me",
+                              tabBarIcon: ({ color, size }) => (
+                                 <Ionicons
+                                    name={"ios-location-outline"}
+                                    size={size}
+                                    color={color}
+                                 />
+                              ),
+                           }}
+                        >
+                           {() => (
+                              <Stack.Navigator>
+                                 <Stack.Screen
+                                    name="Around me"
+                                    options={{
+                                       headerTitle: () => <Logo height={28} />,
+                                    }}
+                                 >
+                                    {() => <AroundMeScreen />}
+                                 </Stack.Screen>
+                              </Stack.Navigator>
+                           )}
+                        </Tab.Screen>
                         <Tab.Screen
                            name="Settings"
                            options={{

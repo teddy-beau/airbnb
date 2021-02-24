@@ -10,17 +10,17 @@ import {
    TouchableOpacity,
    SafeAreaView,
 } from "react-native";
-// import { useNavigation } from "@react-navigation/core";
+import { useNavigation } from "@react-navigation/core";
 import axios from "axios";
 import Constants from "expo-constants";
 // Colors:
 import colors from "../assets/colors";
-const { red, regularGrey, lightGrey, darkGrey, white } = colors;
+const { red, regularGrey, lightGrey, darkGrey, white, yellow } = colors;
 // Components:
 import StarRating from "../components/StarRating";
 
-const HomeScreen = ({ navigation }) => {
-   //  const navigation = useNavigation();
+const HomeScreen = () => {
+   const navigation = useNavigation();
    const [data, setData] = useState([]);
    const [isLoading, setIsLoading] = useState(true);
 
@@ -52,7 +52,10 @@ const HomeScreen = ({ navigation }) => {
             renderItem={({ item, index }) =>
                isLoading ? (
                   <View>
-                     <ActivityIndicator color={red} />
+                     <ActivityIndicator
+                        color={red}
+                        style={{ justifyContent: "center", height: 210 }}
+                     />
                   </View>
                ) : (
                   <TouchableOpacity
@@ -118,9 +121,10 @@ const styles = StyleSheet.create({
    price: {
       position: "absolute",
       top: 150,
-      width: 110,
+      width: "auto",
       height: 50,
       paddingVertical: 12,
+      paddingHorizontal: "5%",
       backgroundColor: "#000000",
       color: white,
       textAlign: "center",

@@ -5,53 +5,124 @@ import {
    Image,
    Text,
    View,
-   FlatList,
    ActivityIndicator,
    TouchableOpacity,
    SafeAreaView,
+   ScrollView,
 } from "react-native";
-// import { useNavigation } from "@react-navigation/core";
+import { useNavigation, useRoute } from "@react-navigation/core";
 import axios from "axios";
 import Constants from "expo-constants";
+import { FontAwesome } from "@expo/vector-icons";
 // Colors:
 import colors from "../assets/colors";
-const { red, regularGrey, lightGrey, darkGrey, white } = colors;
+const { red, regularGrey, lightGrey, darkGrey, white, yellow } = colors;
 // Components:
 import StarRating from "../components/StarRating";
+import PhotoCarousel from "../components/PhotoCarousel";
 
-const RoomScreen = ({ route }) => {
-   // const navigation = useNavigation();
+const RoomScreen = () => {
+   const navigation = useNavigation();
+   const route = useRoute();
    const [data, setData] = useState([]);
    const [isLoading, setIsLoading] = useState(true);
-   console.log(route.params);
+   const [clipDescription, setClipDescription] = useState(3);
 
    // Fetch data from API
-   // useEffect(() => {
-   //    const fetchData = async () => {
-   //       try {
-   //          const response = await axios.get(
-   //             `https://express-airbnb-api.herokuapp.com/rooms/${route.params.roomId}`
-   //          );
-   //          // console.log(response.data);
-   //          setData(response.data);
-   //          setIsLoading(false);
-   //       } catch (error) {
-   //          console.log(error.response);
-   //       }
-   //    };
-   //    fetchData();
-   // }, []);
+   useEffect(() => {
+      const fetchData = async () => {
+         try {
+            const response = await axios.get(
+               `https://express-airbnb-api.herokuapp.com/rooms/${route.params.roomId}`
+            );
+            // console.log(response.data);
+            setData(response.data);
+            setIsLoading(false);
+         } catch (error) {
+            console.log(error.response);
+         }
+      };
+      fetchData();
+   }, []);
 
    return (
       <SafeAreaView style={styles.screenContainer}>
          {isLoading ? (
-            <View>
+            <View style={{ justifyContent: "center", height: "100%" }}>
                <ActivityIndicator color={red} />
             </View>
          ) : (
-            <View>
-               <Text>Coucou {data.title}</Text>
-            </View>
+            <ScrollView>
+               <PhotoCarousel photos={data.photos} />
+               <Text style={styles.price}>{data.price} €</Text>
+               <View style={styles.adDetails}>
+                  <View style={styles.adDetailsTop}>
+                     <View style={styles.adDetailsTextSection}>
+                        <Text
+                           style={styles.title}
+                           ellipsizeMode="tail"
+                           numberOfLines={1}
+                        >
+                           {data.title}
+                        </Text>
+                        <View style={styles.reviewsSection}>
+                           <StarRating rating={data.ratingValue} />
+                           <Text style={styles.rewiewsText}>
+                              {data.reviews} reviews
+                           </Text>
+                        </View>
+                     </View>
+                     <Image
+                        source={{ uri: data.user.account.photo.url }}
+                        style={styles.userPhoto}
+                     />
+                  </View>
+                  <Text
+                     style={styles.adDetailsBottom}
+                     ellipsizeMode="tail"
+                     numberOfLines={clipDescription}
+                  >
+                     {data.description}
+                  </Text>
+                  <TouchableOpacity
+                     activeOpacity={0.5}
+                     onPress={() => {
+                        if (clipDescription === 3) {
+                           setClipDescription(0);
+                        } else {
+                           setClipDescription(3);
+                        }
+                     }}
+                  >
+                     {clipDescription ? (
+                        <Text style={styles.showMore}>
+                           Show more{"  "}
+                           <FontAwesome
+                              name="caret-down"
+                              size={16}
+                              color={lightGrey}
+                              style={{
+                                 alignSelf: "flex-end",
+                              }}
+                           />
+                        </Text>
+                     ) : (
+                        <Text style={styles.showMore}>
+                           Show less{"  "}
+                           <FontAwesome
+                              name="caret-up"
+                              size={16}
+                              color={lightGrey}
+                           />
+                        </Text>
+                     )}
+                  </TouchableOpacity>
+               </View>
+               <Image
+                  source={require("../assets/map.png")}
+                  style={styles.image}
+               />
+            </ScrollView>
          )}
       </SafeAreaView>
    );
@@ -63,25 +134,17 @@ const styles = StyleSheet.create({
       height: "100%",
       backgroundColor: white,
    },
-   flatListContainer: {
-      paddingHorizontal: "5%",
-   },
-   separator: {
-      borderBottomWidth: 1,
-      borderBottomColor: lightGrey,
-      marginTop: 12,
-      marginBottom: 16,
-   },
    image: {
       width: "100%",
-      height: 210,
+      height: 280,
    },
    price: {
       position: "absolute",
-      top: 150,
-      width: 110,
+      top: 210,
+      width: "auto",
       height: 50,
       paddingVertical: 12,
+      paddingHorizontal: "5%",
       backgroundColor: "#000000",
       color: white,
       textAlign: "center",
@@ -89,8 +152,22 @@ const styles = StyleSheet.create({
       fontWeight: "300",
    },
    adDetails: {
+      paddingHorizontal: "5%",
+      marginBottom: 24,
+   },
+   adDetailsTop: {
       marginTop: 12,
       flexDirection: "row",
+   },
+   adDetailsBottom: {
+      marginTop: 12,
+      fontSize: 16,
+      color: darkGrey,
+   },
+   showMore: {
+      color: lightGrey,
+      fontSize: 16,
+      marginTop: 6,
    },
    adDetailsTextSection: {
       justifyContent: "center",
