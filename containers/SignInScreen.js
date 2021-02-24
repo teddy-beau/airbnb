@@ -2,75 +2,75 @@ import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/core";
 import {
    Text,
-   TextInput,
    View,
    TouchableOpacity,
-   Image,
    StyleSheet,
    ActivityIndicator,
+   SafeAreaView,
+   Platform,
 } from "react-native";
 import axios from "axios";
-import colors from "../assets/colors";
-const { red, regularGrey, lighGrey, darkGrey, white } = colors;
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { Feather } from "@expo/vector-icons";
+import Constants from "expo-constants";
+// Colors:
+import colors from "../assets/colors";
+const { red, regularGrey, lightGrey, darkGrey, white } = colors;
+// Components:
+import Logo from "../components/Logo";
+import TitleLarge from "../components/TitleLarge";
+import InputRegular from "../components/InputRegular";
+import InputPassword from "../components/InputPassword";
 
-export default function SignInScreen({ setToken }) {
+const SignInScreen = ({ setToken }) => {
    const navigation = useNavigation();
    const [email, setEmail] = useState("");
    const [password, setPassword] = useState("");
    const [missingField, setMissingField] = useState(false);
-   const [passwordVisible, setPasswordVisible] = useState(false);
    const [isLoading, setIsLoading] = useState(false);
+   const [error, setError] = useState(null);
+
+   const handleSubmit = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+         if (email && password) {
+            const response = await axios.post(
+               "https://express-airbnb-api.herokuapp.com/user/log_in",
+               { email: email, password: password }
+            );
+            setToken(response.data.token);
+            alert("Login successfully!");
+         } else {
+            setMissingField(true);
+         }
+      } catch (error) {
+         console.log(error.response);
+         alert("Wrong email or password!");
+      }
+      setIsLoading(false);
+   };
 
    return (
-      <KeyboardAwareScrollView style={styles.screenContainer}>
-         <View style={styles.mainContainer}>
+      <SafeAreaView style={styles.screenContainer}>
+         <KeyboardAwareScrollView
+            contentContainerStylestyle={styles.scrollViewContainer}
+         >
             <View style={styles.headerContainer}>
-               <Image
-                  style={styles.logo}
-                  source={require("../assets/logo.png")}
-                  resizeMode={"contain"}
-               />
-               <Text style={styles.title}>Sign in</Text>
+               <Logo />
+               <TitleLarge content={"Sign in"} />
             </View>
             <View style={styles.formContainer}>
-               <TextInput
-                  style={styles.input}
-                  placeholder="email"
-                  onChangeText={(text) => setEmail(text)}
-                  value={email}
-                  textContentType="emailAddress"
+               <InputRegular
+                  placeholder={"email"}
+                  type={"emailAddress"}
+                  setFunction={setEmail}
                />
-               <View
-                  style={{
-                     flexDirection: "row",
-                     justifyContent: "space-between",
-                     alignItems: "flex-end",
-                  }}
-               >
-                  <TextInput
-                     style={[styles.input, { width: "90%" }]}
-                     placeholder="password"
-                     onChangeText={(text) => setPassword(text)}
-                     value={password}
-                     secureTextEntry={passwordVisible ? false : true}
-                     textContentType="password"
-                  />
-                  <View style={[styles.input, { width: "10%" }]}>
-                     <Feather
-                        name={passwordVisible ? "eye-off" : "eye"}
-                        size={20}
-                        onPress={() => {
-                           if (passwordVisible) {
-                              setPasswordVisible(false);
-                           } else {
-                              setPasswordVisible(true);
-                           }
-                        }}
-                     />
-                  </View>
-               </View>
+               <InputPassword
+                  placeholder={"password"}
+                  type={"password"}
+                  setFunction={setPassword}
+                  eyeSwitch={true}
+               />
             </View>
             <View style={styles.submitContainer}>
                {missingField && (
@@ -79,7 +79,7 @@ export default function SignInScreen({ setToken }) {
                   </Text>
                )}
                {isLoading ? (
-                  <View style={styles.loaderContainer}>
+                  <View>
                      <ActivityIndicator color={red} />
                   </View>
                ) : (
@@ -87,25 +87,7 @@ export default function SignInScreen({ setToken }) {
                      style={styles.buttonOutline}
                      activeOpacity="0.5"
                      title="Sign in"
-                     onPress={async () => {
-                        setIsLoading(true);
-                        try {
-                           if (email && password) {
-                              const response = await axios.post(
-                                 "https://express-airbnb-api.herokuapp.com/user/log_in",
-                                 { email: email, password: password }
-                              );
-                              setToken(response.data.token);
-                              alert("Login successfully!");
-                           } else {
-                              setMissingField(true);
-                           }
-                        } catch (error) {
-                           console.log(error.response);
-                           alert("Wrong email or password!");
-                        }
-                        setIsLoading(false);
-                     }}
+                     onPress={handleSubmit}
                   >
                      <Text style={styles.buttonText}>Sign in</Text>
                   </TouchableOpacity>
@@ -119,49 +101,27 @@ export default function SignInScreen({ setToken }) {
                   <Text style={styles.regularText}>Create an account</Text>
                </TouchableOpacity>
             </View>
-         </View>
-      </KeyboardAwareScrollView>
+         </KeyboardAwareScrollView>
+      </SafeAreaView>
    );
-}
+};
 
 const styles = StyleSheet.create({
    screenContainer: {
-      backgroundColor: white,
+      marginTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
       height: "100%",
-   },
-   loaderContainer: {
       backgroundColor: white,
-      height: "100%",
-      paddingTop: 50,
    },
-   mainContainer: {
-      alignItems: "center",
+   scrollViewContainer: {
+      backgroundColor: white,
    },
    headerContainer: {
       alignItems: "center",
       marginTop: 10,
    },
-   logo: {
-      width: 100,
-      height: 150,
-   },
-   title: {
-      color: regularGrey,
-      fontSize: 26,
-      fontWeight: "700",
-   },
    formContainer: {
-      width: "75%",
+      paddingHorizontal: "15%",
       marginTop: 30,
-   },
-   input: {
-      color: darkGrey,
-      fontSize: 18,
-      fontWeight: "500",
-      paddingVertical: 8,
-      borderBottomColor: red,
-      borderBottomWidth: 1,
-      marginVertical: 20,
    },
    submitContainer: {
       marginVertical: 50,
@@ -189,3 +149,5 @@ const styles = StyleSheet.create({
       marginVertical: 16,
    },
 });
+
+export default SignInScreen;

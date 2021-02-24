@@ -1,117 +1,135 @@
+// Packages:
 import React, { useState } from "react";
-import { useNavigation } from "@react-navigation/core";
 import {
    Text,
-   TextInput,
    View,
    TouchableOpacity,
-   Image,
    StyleSheet,
    ActivityIndicator,
+   SafeAreaView,
 } from "react-native";
 import axios from "axios";
-import colors from "../assets/colors";
-const { red, regularGrey, lighGrey, darkGrey, white } = colors;
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { Feather } from "@expo/vector-icons";
+import Constants from "expo-constants";
+// Colors:
+import colors from "../assets/colors";
+const { red, regularGrey, lightGrey, darkGrey, white } = colors;
+
+// Components:
+import Logo from "../components/Logo";
+import TitleLarge from "../components/TitleLarge";
+import InputRegular from "../components/InputRegular";
+import InputLarge from "../components/InputLarge";
+import InputPassword from "../components/InputPassword";
+import RedirectButton from "../components/RedirectButton";
 
 export default function SignUpScreen({ setToken }) {
-   const navigation = useNavigation();
-
    const [email, setEmail] = useState("");
    const [username, setUsername] = useState("");
    const [description, setDescription] = useState("");
    const [password, setPassword] = useState("");
    const [passwordConfirmation, setPasswordConfirmation] = useState("");
-   const [missingField, setMissingField] = useState(false);
-   const [passwordVisible, setPasswordVisible] = useState(false);
+   const [inputError, setInputError] = useState(null);
    const [isLoading, setIsLoading] = useState(false);
 
+   const handleSubmit = async () => {
+      setIsLoading(true);
+      setInputError(null);
+      if (
+         email &&
+         username &&
+         description &&
+         password &&
+         passwordConfirmation
+      ) {
+         if (password === passwordConfirmation) {
+            try {
+               const response = await axios.post(
+                  "https://express-airbnb-api.herokuapp.com/user/sign_up",
+                  {
+                     email,
+                     username,
+                     description,
+                     password,
+                  }
+               );
+               if (response.data) {
+                  setToken(response.data.token);
+                  alert("Successfully signed up!");
+               } else {
+                  setInputError(
+                     "A server error occurred, please try again later."
+                  );
+               }
+            } catch (error) {
+               console.log(error.response.data.error);
+
+               const errorMessage = error.response.data.error;
+
+               if (errorMessage === "This email already has an account.") {
+                  setInputError(
+                     "An account is already associated with this email."
+                  );
+               } else if (
+                  errorMessage === "This username already has an account."
+               ) {
+                  setInputError(
+                     "An account is already associated with this username."
+                  );
+               }
+            }
+         } else {
+            setInputError("The two passwords don't match!");
+         }
+      } else {
+         setInputError("All fields are required!");
+      }
+      setIsLoading(false);
+   };
+
    return (
-      <KeyboardAwareScrollView style={styles.screenContainer}>
-         <View style={styles.mainContainer}>
+      <SafeAreaView style={styles.screenContainer}>
+         <KeyboardAwareScrollView
+            contentContainerStylestyle={styles.scrollViewContainer}
+         >
             <View style={styles.headerContainer}>
-               <Image
-                  style={styles.logo}
-                  source={require("../assets/logo.png")}
-                  resizeMode={"contain"}
-               />
-               <Text style={styles.title}>Sign up</Text>
+               <Logo />
+               <TitleLarge content={"Sign up"} />
             </View>
             <View style={styles.formContainer}>
-               <TextInput
-                  style={styles.input}
-                  placeholder="email"
-                  onChangeText={(text) => setEmail(text)}
-                  value={email}
-                  textContentType="emailAddress"
+               <InputRegular
+                  placeholder={"email"}
+                  type={"emailAddress"}
+                  setFunction={setEmail}
                />
-               <TextInput
-                  style={styles.input}
-                  placeholder="username"
-                  onChangeText={(text) => setUsername(text)}
-                  value={username}
-                  textContentType="username"
+               <InputRegular
+                  placeholder={"username"}
+                  type={"username"}
+                  setFunction={setUsername}
                />
-               <TextInput
-                  style={styles.textarea}
-                  placeholder="describe yourself in a few words..."
-                  onChangeText={(text) => setDescription(text)}
-                  value={description}
-                  multiline={true}
-                  numberOfLines={3}
+               <InputLarge
+                  placeholder={"describe yourself in a few words..."}
+                  setFunction={setDescription}
                />
-               <View
-                  style={{
-                     flexDirection: "row",
-                     justifyContent: "space-between",
-                     alignItems: "flex-end",
-                  }}
-               >
-                  <TextInput
-                     style={[styles.input, { width: "90%" }]}
-                     placeholder="password"
-                     onChangeText={(text) => setPassword(text)}
-                     value={password}
-                     secureTextEntry={passwordVisible ? false : true}
-                     textContentType="password"
-                  />
-                  <View style={[styles.input, { width: "10%" }]}>
-                     <Feather
-                        name={passwordVisible ? "eye-off" : "eye"}
-                        size={20}
-                        onPress={() => {
-                           if (passwordVisible) {
-                              setPasswordVisible(false);
-                           } else {
-                              setPasswordVisible(true);
-                           }
-                        }}
-                     />
-                  </View>
-               </View>
-               <TextInput
-                  style={styles.input}
-                  placeholder="confirm password"
-                  onChangeText={(text) => setPasswordConfirmation(text)}
-                  value={passwordConfirmation}
-                  secureTextEntry={true}
-                  textContentType="password"
+               <InputPassword
+                  placeholder={"password"}
+                  type={"password"}
+                  setFunction={setPassword}
+                  eyeSwitch={true}
+               />
+               <InputPassword
+                  placeholder={"confirm password"}
+                  type={"password"}
+                  setFunction={setPasswordConfirmation}
+                  eyeSwitch={false}
                />
             </View>
             <View style={styles.submitContainer}>
-               {passwordConfirmation !== password && (
-                  <Text style={styles.missingField}>
-                     The 2 passwords don't match!
-                  </Text>
-               )}
-               {missingField && (
-                  <Text style={styles.missingField}>
-                     All fields are required
-                  </Text>
+               {inputError && (
+                  <Text style={styles.inputError}>{inputError}</Text>
                )}
                {isLoading ? (
-                  <View style={styles.loaderContainer}>
+                  <View>
                      <ActivityIndicator color={red} />
                   </View>
                ) : (
@@ -119,105 +137,43 @@ export default function SignUpScreen({ setToken }) {
                      style={styles.buttonOutline}
                      activeOpacity="0.5"
                      title="Sign up"
-                     onPress={async () => {
-                        setIsLoading(true);
-                        try {
-                           if (
-                              email &&
-                              username &&
-                              description &&
-                              password &&
-                              passwordConfirmation
-                           ) {
-                              const response = await axios.post(
-                                 "https://express-airbnb-api.herokuapp.com/user/sign_up",
-                                 {
-                                    email: email,
-                                    username: username,
-                                    description: description,
-                                    password: password,
-                                 }
-                              );
-                              setToken(response.data.token);
-                              alert("Signed up successfully!");
-                           } else {
-                              setMissingField(true);
-                           }
-                        } catch (error) {
-                           console.log(error.response);
-                           alert(error.response.data.error);
-                        }
-                        setIsLoading(false);
-                     }}
+                     onPress={handleSubmit}
                   >
                      <Text style={styles.buttonText}>Sign up</Text>
                   </TouchableOpacity>
                )}
-               <TouchableOpacity
-                  activeOpacity="0.5"
-                  onPress={() => {
-                     navigation.navigate("SignIn");
-                  }}
-               >
-                  <Text style={styles.regularText}>
-                     Already have an account? Sign in!
-                  </Text>
-               </TouchableOpacity>
+               <RedirectButton
+                  content={"Already have an account? Sign in!"}
+                  screen={"SignIn"}
+               />
             </View>
-         </View>
-      </KeyboardAwareScrollView>
+         </KeyboardAwareScrollView>
+      </SafeAreaView>
    );
 }
 
 const styles = StyleSheet.create({
    screenContainer: {
-      backgroundColor: white,
+      marginTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
       height: "100%",
+      backgroundColor: white,
    },
-   mainContainer: {
-      alignItems: "center",
+   scrollViewContainer: {
+      backgroundColor: white,
    },
    headerContainer: {
       alignItems: "center",
       marginTop: 10,
    },
-   logo: {
-      width: 100,
-      height: 150,
-   },
-   title: {
-      color: regularGrey,
-      fontSize: 26,
-      fontWeight: "700",
-   },
    formContainer: {
-      width: "75%",
+      paddingHorizontal: "15%",
       marginTop: 30,
-   },
-   input: {
-      color: darkGrey,
-      fontSize: 18,
-      fontWeight: "500",
-      paddingVertical: 8,
-      borderBottomColor: red,
-      borderBottomWidth: 1,
-      marginVertical: 20,
-   },
-   textarea: {
-      color: darkGrey,
-      fontSize: 18,
-      fontWeight: "500",
-      padding: 8,
-      borderColor: red,
-      borderWidth: 1,
-      marginVertical: 20,
-      height: 100,
    },
    submitContainer: {
       marginVertical: 50,
       alignItems: "center",
    },
-   missingField: {
+   inputError: {
       color: red,
       marginVertical: 16,
    },
@@ -233,9 +189,5 @@ const styles = StyleSheet.create({
       fontSize: 20,
       fontWeight: "500",
       padding: 10,
-   },
-   regularText: {
-      color: regularGrey,
-      marginVertical: 16,
    },
 });
