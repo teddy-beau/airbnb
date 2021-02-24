@@ -9,6 +9,7 @@ import colors from "./assets/colors";
 const { red, regularGrey, lightGrey, darkGrey, white } = colors;
 // Containers:
 import HomeScreen from "./containers/HomeScreen";
+import RoomScreen from "./containers/RoomScreen";
 import ProfileScreen from "./containers/ProfileScreen";
 import SignInScreen from "./containers/SignInScreen";
 import SignUpScreen from "./containers/SignUpScreen";
@@ -92,16 +93,19 @@ export default function App() {
                                  <Stack.Screen
                                     name="Home"
                                     options={{
-                                       title: "My App",
-                                       //  headerStyle: { backgroundColor: "red" },
-                                       //  headerTitleStyle: { color: "white" },
-                                       headerTitle: () => <Logo height={40} />,
-                                       //  headerShown: false,
+                                       headerTitle: () => <Logo height={28} />,
                                     }}
                                  >
                                     {() => <HomeScreen />}
                                  </Stack.Screen>
-
+                                 <Stack.Screen
+                                    name="Room"
+                                    options={{
+                                       headerTitle: () => <Logo height={28} />,
+                                    }}
+                                 >
+                                    {() => <RoomScreen />}
+                                 </Stack.Screen>
                                  <Stack.Screen
                                     name="Profile"
                                     options={{
