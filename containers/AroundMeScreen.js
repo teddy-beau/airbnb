@@ -10,6 +10,7 @@ import {
    SafeAreaView,
    ScrollView,
    Alert,
+   Dimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import axios from "axios";
@@ -131,22 +132,22 @@ const AroundMeScreen = () => {
    );
 };
 
+const width = Dimensions.get("window").width;
+const height = Dimensions.get("window").height;
 const styles = StyleSheet.create({
    screenContainer: {
       // marginTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
-      height: "100%",
-      width: "100%",
+      height: height,
+      width: width,
       backgroundColor: white,
    },
    scrollView: {
-      // marginTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
-      // backgroundColor: "#1A1A1A",
-      height: "100%",
-      width: "100%",
+      height: height,
+      width: width,
    },
    mapContainer: {
       flex: 1,
-      height: "100%",
+      height: height,
    },
    callout: {
       width: 150,
@@ -155,7 +156,7 @@ const styles = StyleSheet.create({
    calloutText: {
       marginVertical: 10,
       textAlign: "center",
-      fontSize: 16,
+      fontSize: 15,
    },
    calloutImage: {
       width: "100%",

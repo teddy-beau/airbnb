@@ -90,7 +90,9 @@ export default function App() {
                            }}
                         >
                            {() => (
-                              <Stack.Navigator>
+                              <Stack.Navigator
+                                 screenOptions={{ headerTitleAlign: "center" }}
+                              >
                                  <Stack.Screen
                                     name="Home"
                                     options={{
@@ -141,7 +143,9 @@ export default function App() {
                            }}
                         >
                            {() => (
-                              <Stack.Navigator>
+                              <Stack.Navigator
+                                 screenOptions={{ headerTitleAlign: "center" }}
+                              >
                                  <Stack.Screen
                                     name="Around me"
                                     options={{
@@ -149,6 +153,23 @@ export default function App() {
                                     }}
                                  >
                                     {() => <AroundMeScreen />}
+                                 </Stack.Screen>
+                                 <Stack.Screen
+                                    name="Room"
+                                    options={{
+                                       headerTitle: () => <Logo height={28} />,
+                                       headerBackImage: () => (
+                                          <Feather
+                                             name="arrow-left"
+                                             size={28}
+                                             color={regularGrey}
+                                             style={{ marginLeft: 4 }}
+                                          />
+                                       ),
+                                       headerBackTitleVisible: false,
+                                    }}
+                                 >
+                                    {() => <RoomScreen />}
                                  </Stack.Screen>
                               </Stack.Navigator>
                            )}
@@ -167,7 +188,9 @@ export default function App() {
                            }}
                         >
                            {() => (
-                              <Stack.Navigator>
+                              <Stack.Navigator
+                                 screenOptions={{ headerTitleAlign: "center" }}
+                              >
                                  <Stack.Screen
                                     name="Settings"
                                     options={{

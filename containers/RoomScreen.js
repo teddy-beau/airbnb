@@ -9,6 +9,7 @@ import {
    TouchableOpacity,
    SafeAreaView,
    ScrollView,
+   Dimensions,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/core";
 import axios from "axios";
@@ -47,13 +48,13 @@ const RoomScreen = () => {
    }, []);
 
    return (
-      <SafeAreaView style={styles.screenContainer}>
+      <SafeAreaView style={styles.safeAreaView}>
          {isLoading ? (
             <View style={{ justifyContent: "center", height: "100%" }}>
                <ActivityIndicator color={red} />
             </View>
          ) : (
-            <ScrollView>
+            <ScrollView style={styles.scrollView}>
                <PhotoCarousel photos={data.photos} />
                <Text style={styles.price}>{data.price} €</Text>
                <View style={styles.adDetails}>
@@ -138,14 +139,17 @@ const RoomScreen = () => {
    );
 };
 
+const width = Dimensions.get("window").width;
+const height = Dimensions.get("window").height;
 const styles = StyleSheet.create({
-   screenContainer: {
-      marginTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
-      height: "100%",
+   safeAreaView: {
+      // marginTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
+      height: height,
       backgroundColor: white,
    },
+   scrollView: {},
    image: {
-      width: "100%",
+      width: width,
       height: 280,
    },
    price: {

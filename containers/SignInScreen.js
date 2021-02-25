@@ -54,9 +54,9 @@ const SignInScreen = ({ setToken }) => {
    };
 
    return (
-      <SafeAreaView style={styles.screenContainer}>
+      <SafeAreaView style={styles.safeAreaView}>
          <KeyboardAwareScrollView
-            contentContainerStylestyle={styles.scrollViewContainer}
+            contentContainerStylestyle={styles.scrollView}
          >
             <View style={styles.headerContainer}>
                <Logo />
@@ -110,12 +110,12 @@ const SignInScreen = ({ setToken }) => {
 };
 
 const styles = StyleSheet.create({
-   screenContainer: {
+   safeAreaView: {
       marginTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
       height: "100%",
       backgroundColor: white,
    },
-   scrollViewContainer: {
+   scrollView: {
       backgroundColor: white,
    },
    headerContainer: {
