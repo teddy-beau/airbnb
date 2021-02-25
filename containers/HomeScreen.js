@@ -101,7 +101,7 @@ const HomeScreen = () => {
 
 const styles = StyleSheet.create({
    screenContainer: {
-      marginTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
+      // marginTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
       height: "100%",
       backgroundColor: white,
    },
