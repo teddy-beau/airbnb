@@ -10,6 +10,7 @@ import {
    ActivityIndicator,
    TouchableOpacity,
    SafeAreaView,
+   ScrollView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import axios from "axios";

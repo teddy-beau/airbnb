@@ -8,6 +8,7 @@ import {
    ActivityIndicator,
    TouchableOpacity,
    SafeAreaView,
+   ScrollView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import axios from "axios";
@@ -18,7 +19,6 @@ import MapView from "react-native-maps";
 import colors from "../assets/colors";
 const { red, regularGrey, lightGrey, darkGrey, white, yellow } = colors;
 // Components:
-import StarRating from "../components/StarRating";
 
 const AroundMeScreen = () => {
    const navigation = useNavigation();
@@ -41,87 +41,88 @@ const AroundMeScreen = () => {
                longitude: location.coords.longitude,
             });
             // console.log(location);
+            try {
+               const response = await axios.get(
+                  `https://express-airbnb-api.herokuapp.com/rooms/around?latitude=${userCoords.latitude}&longitude=${userCoords.longitude}`
+               );
+               setData(response.data);
+               // console.log("data", data);
+            } catch (error) {
+               console.log(error.response);
+            }
          } else {
             setError(true);
          }
-         const response = await axios.get(
-            `https://express-airbnb-api.herokuapp.com/rooms/around?latitude=${userCoords.latitude}&longitude=${userCoords.longitude}`
-         );
-         setData(response.data);
-         console.log("data", data);
+
          setIsLoading(false);
       };
       askPermission();
    }, []);
 
-   // // Fetch coords from API
-   // useEffect(() => {
-   //    const fetchData = async () => {
-   //       try {
-   //          const response = await axios.get(
-   //             `https://express-airbnb-api.herokuapp.com/rooms/around?latitude=${userCoords.latitude}&longitude=${userCoords.longitude}`
-   //          );
-   //          setData(response.data);
-   //          setIsLoading(false);
-   //       } catch (error) {
-   //          console.log(error.response);
-   //       }
-   //    };
-   //    fetchData();
-   // }, [userCoords]);
-
    return (
       <SafeAreaView style={styles.screenContainer}>
-         {isLoading ? (
-            <View style={{ justifyContent: "center", height: "100%" }}>
-               <ActivityIndicator color={red} />
-            </View>
-         ) : error ? (
-            <View style={{ justifyContent: "center", height: "100%" }}>
-               <Text style={styles.deniedMain}>
-                  Permission to use location denied!
-               </Text>
-               <Text style={styles.deniedDetails}>
-                  To use the "Around me" feature please allow geolocation in
-                  your device's settings.
-               </Text>
-            </View>
-         ) : (
-            <MapView
-               initialRegion={{
-                  latitude: userCoords.latitude,
-                  longitude: userCoords.longitude,
-                  latitudeDelta: 0.1,
-                  longitudeDelta: 0.1,
-               }}
-               showsUserLocation={true}
-               style={styles.mapContainer}
-            >
-               {/* {data.map((ad, index) => {
-                  return (
-                     <MapView.Marker
-                        key={ad._id}
-                        coordinate={{
-                           latitude: ad.location[0],
-                           longitude: ad.location[1],
-                        }}
-                     />
-                  );
-               })} */}
-            </MapView>
-         )}
+         <ScrollView style={styles.scrollView}>
+            {isLoading ? (
+               <View style={{ justifyContent: "center", height: "100%" }}>
+                  <ActivityIndicator color={red} />
+               </View>
+            ) : error ? (
+               <View style={{ justifyContent: "center", height: "100%" }}>
+                  <Text style={styles.deniedMain}>
+                     Permission to use location denied!
+                  </Text>
+                  <Text style={styles.deniedDetails}>
+                     To use the "Around me" feature please allow geolocation in
+                     your device's settings.
+                  </Text>
+               </View>
+            ) : (
+               <MapView
+                  initialRegion={{
+                     latitude: userCoords.latitude,
+                     longitude: userCoords.longitude,
+                     latitudeDelta: 0.1,
+                     longitudeDelta: 0.1,
+                  }}
+                  showsUserLocation={true}
+                  style={styles.mapContainer}
+               >
+                  {data.map((ad) => {
+                     console.log(ad);
+                     return (
+                        <MapView.Marker
+                           key={ad._id}
+                           coordinate={{
+                              latitude: ad.location[1],
+                              longitude: ad.location[0],
+                           }}
+                           title={ad.title}
+                        />
+                     );
+                  })}
+               </MapView>
+            )}
+         </ScrollView>
       </SafeAreaView>
    );
 };
 
 const styles = StyleSheet.create({
    screenContainer: {
-      marginTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
+      // marginTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
       height: "100%",
+      width: "100%",
       backgroundColor: white,
+   },
+   scrollView: {
+      // marginTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
+      // backgroundColor: "#1A1A1A",
+      height: "100%",
+      width: "100%",
    },
    mapContainer: {
       flex: 1,
+      height: "100%",
    },
    deniedMain: {
       textAlign: "center",

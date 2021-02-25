@@ -38,16 +38,19 @@ const SignInScreen = ({ setToken }) => {
                "https://express-airbnb-api.herokuapp.com/user/log_in",
                { email: email, password: password }
             );
+            setIsLoading(false);
             setToken(response.data.token);
+
             alert("Login successfully!");
          } else {
+            setIsLoading(false);
             setMissingField(true);
          }
       } catch (error) {
+         setIsLoading(false);
          console.log(error.response);
          alert("Wrong email or password!");
       }
-      setIsLoading(false);
    };
 
    return (
