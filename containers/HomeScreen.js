@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import {
    StyleSheet,
    Image,
+   ImageBackground,
    Text,
    View,
    FlatList,
@@ -65,11 +66,12 @@ const HomeScreen = () => {
                         navigation.navigate("Room", { roomId: item._id })
                      }
                   >
-                     <Image
+                     <ImageBackground
                         source={{ uri: item.photos[index].url }}
                         style={styles.image}
-                     />
-                     <Text style={styles.price}>{item.price} €</Text>
+                     >
+                        <Text style={styles.price}>{item.price} €</Text>
+                     </ImageBackground>
                      <View style={styles.adDetails}>
                         <View style={styles.adDetailsTextSection}>
                            <Text
@@ -111,7 +113,6 @@ const styles = StyleSheet.create({
    separator: {
       borderBottomWidth: 1,
       borderBottomColor: lightGrey,
-      marginTop: 12,
       marginBottom: 16,
    },
    image: {
@@ -119,9 +120,8 @@ const styles = StyleSheet.create({
       height: 210,
    },
    price: {
-      position: "absolute",
-      top: 150,
-      width: "auto",
+      marginTop: 150,
+      alignSelf: "flex-start",
       height: 50,
       paddingVertical: 12,
       paddingHorizontal: "5%",
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
       fontWeight: "300",
    },
    adDetails: {
-      marginTop: 12,
+      marginVertical: 12,
       flexDirection: "row",
    },
    adDetailsTextSection: {

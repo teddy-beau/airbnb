@@ -3,7 +3,7 @@ import { Image, Dimensions, StyleSheet, View } from "react-native";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
 
 const PhotoCarousel = ({ photos }) => {
-   console.log(photos);
+   // console.log(photos);
    return (
       <View style={styles.container}>
          <SwiperFlatList

@@ -80,18 +80,14 @@ const RoomScreen = () => {
                   <Text
                      style={styles.adDetailsBottom}
                      ellipsizeMode="tail"
-                     numberOfLines={clipDescription}
+                     numberOfLines={clipDescription ? 3 : null}
                   >
                      {data.description}
                   </Text>
                   <TouchableOpacity
                      activeOpacity={0.5}
                      onPress={() => {
-                        if (clipDescription === 3) {
-                           setClipDescription(0);
-                        } else {
-                           setClipDescription(3);
-                        }
+                        setClipDescription(!clipDescription);
                      }}
                   >
                      {clipDescription ? (
@@ -141,7 +137,7 @@ const styles = StyleSheet.create({
    price: {
       position: "absolute",
       top: 210,
-      width: "auto",
+      // width: "auto",
       height: 50,
       paddingVertical: 12,
       paddingHorizontal: "5%",

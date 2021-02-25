@@ -7,6 +7,7 @@ import {
    StyleSheet,
    ActivityIndicator,
    SafeAreaView,
+   StatusBar,
 } from "react-native";
 import axios from "axios";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
