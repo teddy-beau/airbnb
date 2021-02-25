@@ -14,6 +14,7 @@ import { useNavigation, useRoute } from "@react-navigation/core";
 import axios from "axios";
 import Constants from "expo-constants";
 import { FontAwesome } from "@expo/vector-icons";
+import MapView from "react-native-maps";
 // Colors:
 import colors from "../assets/colors";
 const { red, regularGrey, lightGrey, darkGrey, white, yellow } = colors;
@@ -114,10 +115,23 @@ const RoomScreen = () => {
                      )}
                   </TouchableOpacity>
                </View>
-               <Image
-                  source={require("../assets/map.png")}
-                  style={styles.image}
-               />
+               <MapView
+                  initialRegion={{
+                     latitude: data.location[1],
+                     longitude: data.location[0],
+                     latitudeDelta: 0.01,
+                     longitudeDelta: 0.01,
+                  }}
+                  showsUserLocation={true}
+                  style={styles.map}
+               >
+                  <MapView.Marker
+                     coordinate={{
+                        latitude: data.location[1],
+                        longitude: data.location[0],
+                     }}
+                  />
+               </MapView>
             </ScrollView>
          )}
       </SafeAreaView>
@@ -190,6 +204,7 @@ const styles = StyleSheet.create({
       borderRadius: 40,
       marginLeft: 10,
    },
+   map: { flex: 1, height: 300 },
 });
 
 export default RoomScreen;
