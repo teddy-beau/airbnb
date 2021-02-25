@@ -11,6 +11,7 @@ import {
    TouchableOpacity,
    SafeAreaView,
    ScrollView,
+   Dimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import axios from "axios";
@@ -102,6 +103,8 @@ const HomeScreen = () => {
    );
 };
 
+const width = Dimensions.get("window").width;
+const height = Dimensions.get("window").height;
 const styles = StyleSheet.create({
    screenContainer: {
       // marginTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
@@ -114,7 +117,8 @@ const styles = StyleSheet.create({
    separator: {
       borderBottomWidth: 1,
       borderBottomColor: lightGrey,
-      marginBottom: 16,
+      marginVertical: 16,
+      alignItems: "center",
    },
    image: {
       width: "100%",

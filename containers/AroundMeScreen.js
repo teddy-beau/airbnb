@@ -60,7 +60,7 @@ const AroundMeScreen = () => {
             );
             try {
                const response = await axios.get(
-                  `https://express-airbnb-api.herokuapp.com/rooms/around?latitude=${userCoords.latitude}&longitude=${userCoords.longitude}`
+                  `https://express-airbnb-api.herokuapp.com/rooms/around`
                );
                setData(response.data);
                // console.log("data", data);
@@ -120,7 +120,7 @@ const AroundMeScreen = () => {
                               ellipsizeMode="tail"
                               numberOfLines={2}
                            >
-                              {ad.title}
+                              {ad.price} € • {ad.title}
                            </Text>
                         </Callout>
                      </MapView.Marker>

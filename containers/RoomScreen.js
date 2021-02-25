@@ -144,7 +144,7 @@ const height = Dimensions.get("window").height;
 const styles = StyleSheet.create({
    safeAreaView: {
       // marginTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
-      height: height,
+      height: "100%",
       backgroundColor: white,
    },
    scrollView: {},

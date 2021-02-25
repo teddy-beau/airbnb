@@ -11,10 +11,9 @@ const { red, regularGrey, lightGrey, darkGrey, white } = colors;
 import HomeScreen from "./containers/HomeScreen";
 import RoomScreen from "./containers/RoomScreen";
 import AroundMeScreen from "./containers/AroundMeScreen";
-import ProfileScreen from "./containers/ProfileScreen";
 import SignInScreen from "./containers/SignInScreen";
 import SignUpScreen from "./containers/SignUpScreen";
-import SettingsScreen from "./containers/SettingsScreen";
+import ProfileScreen from "./containers/ProfileScreen";
 // Components:
 import Logo from "./components/Logo";
 
@@ -118,14 +117,6 @@ export default function App() {
                                  >
                                     {() => <RoomScreen />}
                                  </Stack.Screen>
-                                 <Stack.Screen
-                                    name="Profile"
-                                    options={{
-                                       title: "User Profile",
-                                    }}
-                                 >
-                                    {() => <ProfileScreen />}
-                                 </Stack.Screen>
                               </Stack.Navigator>
                            )}
                         </Tab.Screen>
@@ -175,12 +166,12 @@ export default function App() {
                            )}
                         </Tab.Screen>
                         <Tab.Screen
-                           name="Settings"
+                           name="Profile"
                            options={{
-                              tabBarLabel: "Settings",
+                              tabBarLabel: "Profile",
                               tabBarIcon: ({ color, size }) => (
-                                 <Ionicons
-                                    name={"ios-options"}
+                                 <AntDesign
+                                    name="user"
                                     size={size}
                                     color={color}
                                  />
@@ -192,14 +183,13 @@ export default function App() {
                                  screenOptions={{ headerTitleAlign: "center" }}
                               >
                                  <Stack.Screen
-                                    name="Settings"
+                                    name="Profile"
                                     options={{
-                                       title: "Settings",
-                                       tabBarLabel: "Settings",
+                                       headerTitle: () => <Logo height={28} />,
                                     }}
                                  >
                                     {() => (
-                                       <SettingsScreen setToken={setToken} />
+                                       <ProfileScreen setToken={setToken} />
                                     )}
                                  </Stack.Screen>
                               </Stack.Navigator>
