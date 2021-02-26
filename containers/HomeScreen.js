@@ -13,7 +13,7 @@ import {
    ScrollView,
    Dimensions,
 } from "react-native";
-import { useNavigation } from "@react-navigation/core";
+// import { useNavigation } from "@react-navigation/core";
 import axios from "axios";
 import Constants from "expo-constants";
 // Colors:
@@ -22,8 +22,8 @@ const { red, regularGrey, lightGrey, darkGrey, white, yellow } = colors;
 // Components:
 import StarRating from "../components/StarRating";
 
-const HomeScreen = () => {
-   const navigation = useNavigation();
+const HomeScreen = ({ navigation }) => {
+   // const navigation = useNavigation();
    const [data, setData] = useState([]);
    const [isLoading, setIsLoading] = useState(true);
 
