@@ -10,6 +10,7 @@ import {
    SafeAreaView,
    ScrollView,
    Alert,
+   ImageBackground,
    Dimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/core";
@@ -35,41 +36,59 @@ const AroundMeScreen = () => {
    // Request to use user location:
    useEffect(() => {
       const askPermission = async () => {
-         let { status } = await Location.requestPermissionsAsync();
-         if (status === "granted") {
-            let location = await Location.getCurrentPositionAsync();
-            setUserCoords({
-               latitude: location.coords.latitude,
-               longitude: location.coords.longitude,
-            });
-            // console.log(location);
-            try {
-               const response = await axios.get(
+         try {
+            // Request access to geolocation:
+            const { status } = await Location.requestPermissionsAsync();
+
+            // Will receive the data from requests:
+            let response;
+
+            if (status === "granted") {
+               // Request user's coordinates:
+               const location = await Location.getCurrentPositionAsync();
+
+               setUserCoords({
+                  latitude: location.coords.latitude,
+                  longitude: location.coords.longitude,
+               });
+
+               response = await axios.get(
                   `https://express-airbnb-api.herokuapp.com/rooms/around?latitude=${userCoords.latitude}&longitude=${userCoords.longitude}`
                );
-               setData(response.data);
+               // setData(response.data);
                // console.log("data", data);
-            } catch (error) {
-               console.log(error.response);
-            }
-         } else {
-            // setError(true);
-            Alert.alert(
-               `Geolocation deactivated`,
-               `The following ads won't be based on your location. You can allow geolocation in your device's settings at any time for a better experience.`
-            );
-            try {
-               const response = await axios.get(
+            } else {
+               // setError(true);
+               Alert.alert(
+                  `Geolocation deactivated`,
+                  `The following ads won't be based on your location. You can allow geolocation in your device's settings at any time for a better experience.`
+               );
+
+               response = await axios.get(
                   `https://express-airbnb-api.herokuapp.com/rooms/around`
                );
-               setData(response.data);
+               // setData(response.data);
                // console.log("data", data);
-            } catch (error) {
-               console.log(error.response);
             }
-         }
+            let tab = [];
+            for (let i = 0; i < response.data.length; i++) {
+               tab.push({
+                  latitude: response.data[i].location[1],
+                  longitude: response.data[i].location[0],
+                  _id: response.data[i]._id,
+                  photo: response.data[i].photos[0].url,
+                  title: response.data[i].title,
+                  price: response.data[i].price,
+               });
+            }
+            console.log("tab", tab);
 
-         setIsLoading(false);
+            setData(tab);
+            setIsLoading(false);
+         } catch (error) {
+            alert("An error occured!");
+            console.log(error.response);
+         }
       };
       askPermission();
    }, []);
@@ -97,13 +116,10 @@ const AroundMeScreen = () => {
                      <MapView.Marker
                         key={ad._id}
                         coordinate={{
-                           latitude: ad.location[1],
-                           longitude: ad.location[0],
+                           latitude: ad.latitude,
+                           longitude: ad.longitude,
                         }}
-                        // title={ad.title}
-                        // onPress={() =>
-                        //    navigation.navigate("Room", { roomId: ad._id })
-                        // }
+                        image={require("../assets/pin.png")}
                      >
                         <Callout
                            style={styles.callout}
@@ -111,16 +127,18 @@ const AroundMeScreen = () => {
                               navigation.navigate("Room", { roomId: ad._id })
                            }
                         >
-                           <Image
+                           <ImageBackground
                               style={styles.calloutImage}
-                              source={{ uri: ad.photos[0].url }}
-                           />
+                              source={{ uri: ad.photo }}
+                           >
+                              <Text style={styles.price}>{ad.price} €</Text>
+                           </ImageBackground>
                            <Text
                               style={styles.calloutText}
                               ellipsizeMode="tail"
                               numberOfLines={2}
                            >
-                              {ad.price} € • {ad.title}
+                              {ad.title}
                            </Text>
                         </Callout>
                      </MapView.Marker>
@@ -137,17 +155,17 @@ const height = Dimensions.get("window").height;
 const styles = StyleSheet.create({
    screenContainer: {
       // marginTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
-      height: height,
+      height: "100%",
       width: width,
       backgroundColor: white,
    },
    scrollView: {
-      height: height,
+      height: "100%",
       width: width,
    },
    mapContainer: {
       flex: 1,
-      height: height,
+      height: "100%",
    },
    callout: {
       width: 150,
@@ -161,6 +179,17 @@ const styles = StyleSheet.create({
    calloutImage: {
       width: "100%",
       height: 100,
+   },
+   price: {
+      marginTop: 10,
+      alignSelf: "flex-start",
+      paddingVertical: 4,
+      paddingHorizontal: "5%",
+      backgroundColor: "#000000",
+      color: white,
+      textAlign: "center",
+      fontSize: 15,
+      fontWeight: "600",
    },
 });
 

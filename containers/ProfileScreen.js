@@ -7,6 +7,7 @@ import {
    ScrollView,
    SafeAreaView,
 } from "react-native";
+import Constants from "expo-constants";
 // Colors:
 import colors from "../assets/colors";
 const { red, regularGrey, lightGrey, darkGrey, white, yellow } = colors;

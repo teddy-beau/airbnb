@@ -13,7 +13,7 @@ import {
    ScrollView,
    Dimensions,
 } from "react-native";
-// import { useNavigation } from "@react-navigation/core";
+import { useNavigation } from "@react-navigation/core";
 import axios from "axios";
 import Constants from "expo-constants";
 // Colors:
@@ -22,8 +22,8 @@ const { red, regularGrey, lightGrey, darkGrey, white, yellow } = colors;
 // Components:
 import StarRating from "../components/StarRating";
 
-const HomeScreen = ({ navigation }) => {
-   // const navigation = useNavigation();
+const HomeScreen = () => {
+   const navigation = useNavigation();
    const [data, setData] = useState([]);
    const [isLoading, setIsLoading] = useState(true);
 
@@ -127,7 +127,6 @@ const styles = StyleSheet.create({
    price: {
       marginTop: 150,
       alignSelf: "flex-start",
-      height: 50,
       paddingVertical: 12,
       paddingHorizontal: "5%",
       backgroundColor: "#000000",
