@@ -11,7 +11,6 @@ import {
    ScrollView,
    Dimensions,
 } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/core";
 import axios from "axios";
 import Constants from "expo-constants";
 import { FontAwesome } from "@expo/vector-icons";
@@ -23,9 +22,7 @@ const { red, regularGrey, lightGrey, darkGrey, white, yellow } = colors;
 import StarRating from "../components/StarRating";
 import PhotoCarousel from "../components/PhotoCarousel";
 
-const RoomScreen = () => {
-   const navigation = useNavigation();
-   const route = useRoute();
+const RoomScreen = ({ route }) => {
    const [data, setData] = useState([]);
    const [isLoading, setIsLoading] = useState(true);
    const [clipDescription, setClipDescription] = useState(3);

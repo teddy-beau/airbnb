@@ -10,6 +10,7 @@ const InputPassword = ({
    setFunction,
    secure,
    eyeSwitch,
+   value,
 }) => {
    const [passwordVisible, setPasswordVisible] = useState(false);
 
@@ -27,6 +28,7 @@ const InputPassword = ({
             onChangeText={(text) => setFunction(text)}
             secureTextEntry={passwordVisible ? false : true}
             textContentType={type}
+            value={value && value}
          />
          {eyeSwitch && (
             <View style={[styles.input, { width: "10%" }]}>

@@ -3,13 +3,32 @@ import { StyleSheet, TextInput } from "react-native";
 import colors from "../assets/colors";
 const { red, regularGrey, lightGrey, darkGrey, white } = colors;
 
-const InputLarge = ({ placeholder, setFunction }) => {
+const InputLarge = ({
+   placeholder,
+   setFunction,
+   value,
+   // setNewInformations,
+   setDisplayErrorMessage,
+   setIsInfoModified,
+}) => {
    return (
       <TextInput
          style={styles.textarea}
          placeholder={placeholder}
-         onChangeText={(text) => setFunction(text)}
          multiline={true}
+         value={value && value}
+         onChangeText={(text) => {
+            setFunction(text);
+            // if (setNewInformations) {
+            //    setNewInformations(true);
+            // }
+            if (setDisplayErrorMessage) {
+               setDisplayErrorMessage(false);
+            }
+            if (setIsInfoModified) {
+               setIsInfoModified(true);
+            }
+         }}
       />
    );
 };

@@ -13,7 +13,6 @@ import {
    ImageBackground,
    Dimensions,
 } from "react-native";
-import { useNavigation } from "@react-navigation/core";
 import axios from "axios";
 import Constants from "expo-constants";
 import * as Location from "expo-location";
@@ -23,8 +22,7 @@ import colors from "../assets/colors";
 const { red, regularGrey, lightGrey, darkGrey, white, yellow } = colors;
 // Components:
 
-const AroundMeScreen = () => {
-   const navigation = useNavigation();
+const AroundMeScreen = ({ navigation }) => {
    // const [error, setError] = useState();
    const [data, setData] = useState();
    const [userCoords, setUserCoords] = useState({
@@ -81,7 +79,7 @@ const AroundMeScreen = () => {
                   price: response.data[i].price,
                });
             }
-            console.log("tab", tab);
+            // console.log("tab", tab);
 
             setData(tab);
             setIsLoading(false);

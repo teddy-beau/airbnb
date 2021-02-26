@@ -3,14 +3,34 @@ import { StyleSheet, TextInput } from "react-native";
 import colors from "../assets/colors";
 const { red, regularGrey, lightGrey, darkGrey, white } = colors;
 
-const InputRegular = ({ placeholder, type, setFunction }) => {
+const InputRegular = ({
+   placeholder,
+   type,
+   setFunction,
+   value,
+   // setNewInformations,
+   setDisplayErrorMessage,
+   setIsInfoModified,
+}) => {
    return (
       <TextInput
          style={styles.input}
          placeholder={placeholder}
-         onChangeText={(text) => setFunction(text)}
          textContentType={type}
          keyboardType={type === "emailAddress" ? "email-address" : "default"}
+         value={value && value}
+         onChangeText={(text) => {
+            setFunction(text);
+            // if (setNewInformations) {
+            //    setNewInformations(true);
+            // }
+            if (setDisplayErrorMessage) {
+               setDisplayErrorMessage(false);
+            }
+            if (setIsInfoModified) {
+               setIsInfoModified(true);
+            }
+         }}
       />
    );
 };

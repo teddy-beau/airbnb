@@ -8,6 +8,7 @@ import {
    ActivityIndicator,
    SafeAreaView,
    StatusBar,
+   Dimensions,
 } from "react-native";
 import axios from "axios";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -24,18 +25,18 @@ import InputLarge from "../components/InputLarge";
 import InputPassword from "../components/InputPassword";
 import RedirectButton from "../components/RedirectButton";
 
-export default function SignUpScreen({ setToken }) {
+export default function SignUpScreen({ setToken, setId }) {
    const [email, setEmail] = useState("");
    const [username, setUsername] = useState("");
    const [description, setDescription] = useState("");
    const [password, setPassword] = useState("");
    const [passwordConfirmation, setPasswordConfirmation] = useState("");
-   const [inputError, setInputError] = useState(null);
+   const [displayErrorMessage, setDisplayErrorMessage] = useState(null);
    const [isLoading, setIsLoading] = useState(false);
 
    const handleSubmit = async () => {
       setIsLoading(true);
-      setInputError(null);
+      setDisplayErrorMessage(null);
       if (
          email &&
          username &&
@@ -55,10 +56,13 @@ export default function SignUpScreen({ setToken }) {
                   }
                );
                if (response.data) {
+                  setIsLoading(false);
                   setToken(response.data.token);
-                  alert("Successfully signed up!");
+                  setId(response.data._id);
+                  // alert("Successfully signed up!");
                } else {
-                  setInputError(
+                  setIsLoading(false);
+                  setDisplayErrorMessage(
                      "A server error occurred, please try again later."
                   );
                }
@@ -68,28 +72,27 @@ export default function SignUpScreen({ setToken }) {
                const errorMessage = error.response.data.error;
 
                if (errorMessage === "This email already has an account.") {
-                  setInputError(
+                  setDisplayErrorMessage(
                      "An account is already associated with this email."
                   );
                } else if (
                   errorMessage === "This username already has an account."
                ) {
-                  setInputError(
+                  setDisplayErrorMessage(
                      "An account is already associated with this username."
                   );
                }
             }
          } else {
-            setInputError("The two passwords don't match!");
+            setDisplayErrorMessage("The two passwords don't match!");
          }
       } else {
-         setInputError("All fields are required!");
+         setDisplayErrorMessage("All fields are required!");
       }
-      setIsLoading(false);
    };
 
    return (
-      <SafeAreaView style={styles.screenContainer}>
+      <SafeAreaView style={styles.safeAreaView}>
          <KeyboardAwareScrollView
             contentContainerStylestyle={styles.scrollViewContainer}
          >
@@ -126,8 +129,10 @@ export default function SignUpScreen({ setToken }) {
                />
             </View>
             <View style={styles.submitContainer}>
-               {inputError && (
-                  <Text style={styles.inputError}>{inputError}</Text>
+               {displayErrorMessage && (
+                  <Text style={styles.displayErrorMessage}>
+                     {displayErrorMessage}
+                  </Text>
                )}
                {isLoading ? (
                   <View>
@@ -153,28 +158,31 @@ export default function SignUpScreen({ setToken }) {
    );
 }
 
+const width = Dimensions.get("window").width;
+const height = Dimensions.get("window").height;
 const styles = StyleSheet.create({
-   screenContainer: {
-      marginTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
+   safeAreaView: {
+      width: width,
       height: "100%",
       backgroundColor: white,
    },
    scrollViewContainer: {
-      backgroundColor: white,
+      marginTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
+      width: "100%,",
    },
    headerContainer: {
       alignItems: "center",
       marginTop: 10,
    },
    formContainer: {
-      paddingHorizontal: "15%",
+      paddingHorizontal: "12%",
       marginTop: 30,
    },
    submitContainer: {
       marginVertical: 50,
       alignItems: "center",
    },
-   inputError: {
+   displayErrorMessage: {
       color: red,
       marginVertical: 16,
    },

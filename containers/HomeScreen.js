@@ -13,7 +13,6 @@ import {
    ScrollView,
    Dimensions,
 } from "react-native";
-import { useNavigation } from "@react-navigation/core";
 import axios from "axios";
 import Constants from "expo-constants";
 // Colors:
@@ -22,8 +21,7 @@ const { red, regularGrey, lightGrey, darkGrey, white, yellow } = colors;
 // Components:
 import StarRating from "../components/StarRating";
 
-const HomeScreen = () => {
-   const navigation = useNavigation();
+const HomeScreen = ({ navigation }) => {
    const [data, setData] = useState([]);
    const [isLoading, setIsLoading] = useState(true);
 
@@ -54,11 +52,8 @@ const HomeScreen = () => {
             }}
             renderItem={({ item, index }) =>
                isLoading ? (
-                  <View>
-                     <ActivityIndicator
-                        color={red}
-                        style={{ justifyContent: "center", height: 210 }}
-                     />
+                  <View style={{ justifyContent: "center", height: "100%" }}>
+                     <ActivityIndicator color={red} />
                   </View>
                ) : (
                   <TouchableOpacity

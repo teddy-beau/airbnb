@@ -8,6 +8,7 @@ import {
    ActivityIndicator,
    SafeAreaView,
    Platform,
+   Dimensions,
 } from "react-native";
 import axios from "axios";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -21,7 +22,7 @@ import TitleLarge from "../components/TitleLarge";
 import InputRegular from "../components/InputRegular";
 import InputPassword from "../components/InputPassword";
 
-const SignInScreen = ({ setToken }) => {
+const SignInScreen = ({ setToken, setId }) => {
    const navigation = useNavigation();
    const [email, setEmail] = useState("");
    const [password, setPassword] = useState("");
@@ -40,8 +41,9 @@ const SignInScreen = ({ setToken }) => {
             );
             setIsLoading(false);
             setToken(response.data.token);
-
-            alert("Login successfully!");
+            setId(response.data.id);
+            console.log(response.data);
+            // alert("Login successfully!");
          } else {
             setIsLoading(false);
             setMissingField(true);
@@ -109,21 +111,24 @@ const SignInScreen = ({ setToken }) => {
    );
 };
 
+const width = Dimensions.get("window").width;
+const height = Dimensions.get("window").height;
 const styles = StyleSheet.create({
    safeAreaView: {
-      marginTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
+      width: width,
       height: "100%",
       backgroundColor: white,
    },
    scrollView: {
-      backgroundColor: white,
+      marginTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
+      width: "100%",
    },
    headerContainer: {
       alignItems: "center",
       marginTop: 10,
    },
    formContainer: {
-      paddingHorizontal: "15%",
+      paddingHorizontal: "12%",
       marginTop: 30,
    },
    submitContainer: {

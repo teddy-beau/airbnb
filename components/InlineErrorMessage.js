@@ -3,16 +3,12 @@ import { StyleSheet, Text } from "react-native";
 import colors from "../assets/colors";
 const { red, regularGrey, lightGrey, darkGrey, white } = colors;
 
-const TitleLarge = ({ content }) => {
-   return <Text style={styles.title}>{content}</Text>;
+const InlineErrorMessage = ({ content }) => {
+   return <Text style={styles.text}>{content}</Text>;
 };
 
 const styles = StyleSheet.create({
-   title: {
-      color: regularGrey,
-      fontSize: 26,
-      fontWeight: "700",
-   },
+   text: { color: red, marginVertical: 16, textAlign: "center" },
 });
 
-export default TitleLarge;
+export default InlineErrorMessage;
