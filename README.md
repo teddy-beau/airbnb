@@ -4,10 +4,20 @@
 
 React Native frontend project inspired by the Airbnb mobile app.
 
-**Login & Signup Screens · · · · · · · · · · · · · · · · · · Home Screen**
+## Preview
+
+**· · · Login & Signup Screens · · · · · · · · · · · · · · · · · · Home Screen · · ·**
 
 ![GIF Signup](./_preview/airbnb-signup.gif) ![GIF Home](./_preview/airbnb-home.gif)
 
-**Offer Screen · · · · · · · · · · · · · · · · · · · · · · · · · · · · Around Me Screen**
+**· · · Offer Screen · · · · · · · · · · · · · · · · · · · · · · · · · · · · Around Me Screen · · ·**
 
 ![GIF Offer](./_preview/airbnb-offer.gif) ![GIF Around Me](./_preview/airbnb-aroundme.gif)
+
+## Stack
+
+-  React Native
+-  Expo
+-  Mapview
+
+## Backlog
