@@ -37,7 +37,7 @@ React Native frontend project inspired by the Airbnb mobile app.
 <img src="./_preview/airbnb-profile.gif" alt="airbnb profile screen" width="250"/>
 </div>
 
-## Installation and usage
+## Installation
 
 Be sure, you have installed all dependencies and applications to run an Expo project on your computer : [Getting Started with Expo](https://docs.expo.io/get-started/installation/).
 
