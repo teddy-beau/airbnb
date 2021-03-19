@@ -26,7 +26,7 @@ React Native frontend project inspired by the Airbnb mobile app.
 -  expo-image-picker
 -  expo-location
 -  react-native-maps (Mapview)
--  react-native-swiper-flatlist
+-  react-native-swiper-flatlist (image swiper)
 -  relying on an external API from [Le Reacteur](https://github.com/lereacteur/express-airbnb) for the data
 
 ## Screenshots
