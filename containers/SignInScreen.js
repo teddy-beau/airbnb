@@ -13,9 +13,11 @@ import {
 import axios from "axios";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Constants from "expo-constants";
+
 // Colors:
 import colors from "../assets/colors";
 const { red, regularGrey, lightGrey, darkGrey, white } = colors;
+
 // Components:
 import Logo from "../components/Logo";
 import TitleLarge from "../components/TitleLarge";
@@ -42,8 +44,6 @@ const SignInScreen = ({ setToken, setId }) => {
             setIsLoading(false);
             setToken(response.data.token);
             setId(response.data.id);
-            console.log(response.data);
-            // alert("Login successfully!");
          } else {
             setIsLoading(false);
             setMissingField(true);

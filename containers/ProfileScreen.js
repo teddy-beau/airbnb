@@ -10,20 +10,21 @@ import {
    Image,
    ActivityIndicator,
    Dimensions,
-   Message,
 } from "react-native";
 import Constants from "expo-constants";
 import * as ImagePicker from "expo-image-picker";
 import { MaterialIcons } from "@expo/vector-icons";
+import axios from "axios";
+
 // Colors:
 import colors from "../assets/colors";
 const { red, regularGrey, lightGrey, darkGrey, white, yellow } = colors;
+
 // Components:
 import TitleLarge from "../components/TitleLarge";
 import InputRegular from "../components/InputRegular";
 import InputLarge from "../components/InputLarge";
 import InlineErrorMessage from "../components/InlineErrorMessage";
-import axios from "axios";
 
 const ProfileScreen = ({ setToken, setId, userToken, userId }) => {
    const [data, setData] = useState([]);
@@ -32,119 +33,162 @@ const ProfileScreen = ({ setToken, setId, userToken, userId }) => {
    const [username, setUsername] = useState("");
    const [description, setDescription] = useState("");
    const [picture, setPicture] = useState(null);
-   // const [uploading, setUploading] = useState(false);
    const [isPictureModified, setIsPictureModified] = useState(false);
    const [isInfoModified, setIsInfoModified] = useState(false);
-   const [displayErrorMessage, setDisplayErrorMessage] = useState(null); // For error messages
+   const [displayMessage, setDisplayMessage] = useState(null); // For error messages
 
-   // Fetch data from API
+   // Fetch data from API when screen is mounted:
    useEffect(() => {
-      const fetchData = async () => {
-         try {
-            // Fetching user data:
-            const response = await axios.get(
-               `https://express-airbnb-api.herokuapp.com/user/${userId}`,
-               {
-                  headers: {
-                     Authorization: `Bearer ${userToken}`,
-                  },
-               }
-            );
-            setEmail(response.data.email);
-            setUsername(response.data.username);
-            setDescription(response.data.description);
-            // Only if a picture is available:
-            if (response.data.photo) {
-               setPicture({ uri: response.data.photo[0].url });
-            }
-            // Data loaded.
-            setIsLoading(false);
-         } catch (error) {
-            console.log(error.response);
-            setDisplayErrorMessage("An error occured");
-         }
-      };
       fetchData();
    }, []);
 
+   // Function kept outside of useEffect to be called elsewhere:
+   const fetchData = async () => {
+      try {
+         // Fetching user data:
+         const response = await axios.get(
+            `https://express-airbnb-api.herokuapp.com/user/${userId}`,
+            {
+               headers: {
+                  Authorization: `Bearer ${userToken}`,
+               },
+            }
+         );
+         setEmail(response.data.email);
+         setUsername(response.data.username);
+         setDescription(response.data.description);
+         // Only if a picture is available:
+         if (response.data.photo) {
+            setPicture({ uri: response.data.photo[0].url });
+         }
+         // Data loaded.
+         setIsLoading(false);
+      } catch (error) {
+         console.log(error.response);
+         setDisplayMessage("An error occured");
+         setIsLoading(false);
+      }
+   };
+
    // Update profile info and/or picture :
    const updateProfile = async () => {
-      setDisplayErrorMessage(false);
+      setDisplayMessage(false);
+
       // On press, if picture/info have been modified, start loading:
       if (isPictureModified || isInfoModified) {
          setIsLoading(true);
 
-         // Send request to update picture:
+         // If picture is modified, send request to update:
          if (isPictureModified) {
+            try {
+               const uri = picture.uri;
+               const uriParts = uri.split(".");
+               const fileType = uriParts[1];
+
+               const formData = new FormData();
+               formData.append("photo", {
+                  uri,
+                  name: `userPicture`,
+                  type: `image/${fileType}`,
+               });
+
+               const response = await axios.put(
+                  `https://express-airbnb-api.herokuapp.com/user/upload_picture`,
+                  formData,
+                  {
+                     headers: {
+                        Authorization: "Bearer " + userToken,
+                     },
+                  }
+               );
+
+               if (response.data) {
+                  console.log("res", response.data);
+                  // New picture will be shown on screen:
+                  setPicture({ uri: response.data.photo[0].url });
+                  setDisplayMessage("Your profile has been updated");
+               }
+            } catch (error) {
+               setDisplayMessage("Your profile has been successfully updated");
+            }
          }
+         // If info is modified, send a request to update:
+         if (isInfoModified) {
+            try {
+               const objToSend = {
+                  email: email,
+                  username: username,
+                  description: description,
+               };
+
+               const response = await axios.put(
+                  `https://express-airbnb-api.herokuapp.com/user/update`,
+                  objToSend,
+                  {
+                     headers: {
+                        Authorization: "Bearer " + userToken,
+                     },
+                  }
+               );
+
+               if (response.data) {
+                  setDisplayMessage(
+                     "Your profile has been successfully updated"
+                  );
+               }
+            } catch (error) {
+               setDisplayMessage(`${error.response.data.error}`);
+            }
+         }
+
+         // Reset these states:
+         isPictureModified && setIsPictureModified(false);
+         isInfoModified && setIsInfoModified(false);
+         setIsLoading(false);
+
+         // Refresh with the new data:
+         fetchData();
+      } else {
+         setDisplayMessage("Change at least one information");
       }
    };
 
-   const handleImagePicked = useCallback(async (pickerResult) => {
-      try {
-         let uploadResponse, uploadResult;
-         setIsLoading(true);
-         if (!pickerResult.cancelled) {
-            const uri = pickerResult.uri;
-            const uriParts = uri.split(".");
-            const fileType = uriParts[uriParts.length - 1];
-            const formData = new FormData();
-            formData.append("photo", {
-               uri,
-               name: `photo.${fileType}`,
-               type: `image/${fileType}`,
-            });
-            uploadResponse = await axios.put(
-               `https://express-airbnb-api.herokuapp.com/user/upload_picture/${userId}`,
-               formData,
-               {
-                  headers: {
-                     Authorization: `Bearer ${userToken}`,
-                     Accept: "application/json",
-                     "Content-Type": "multipart/form-data",
-                  },
-               }
-            );
-            if (
-               Array.isArray(uploadResponse.data.photo) === true &&
-               uploadResponse.data.photo.length > 0
-            ) {
-               setPicture(uploadResponse.data.photo[0].url);
-            }
-         }
-      } catch (error) {
-         alert("File upload failed, please try again later.");
-      } finally {
-         setIsLoading(false);
-      }
-   });
-
    const getFromLibrary = async () => {
+      // Ask permission to access camera roll:
       const libraryPermission = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (libraryPermission.status === "granted") {
          const pickerResult = await ImagePicker.launchImageLibraryAsync();
-         handleImagePicked(pickerResult);
+         setPicture(pickerResult);
+         setIsPictureModified(true);
       }
    };
 
    const getFromCamera = async () => {
+      // Ask permission to access camera and camera roll:
       const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
       const libraryPermission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      console.log(cameraPermission, libraryPermission);
       if (
          cameraPermission.status === "granted" &&
          libraryPermission.status === "granted"
       ) {
          const pickerResult = await ImagePicker.launchCameraAsync();
-         handleImagePicked(pickerResult);
+         setPicture(pickerResult);
+         setIsPictureModified(true);
       }
    };
+
+   // Hide the message after 2.5 seconds:
+   if (displayMessage) {
+      setTimeout(() => setDisplayMessage(false), 2500);
+   }
 
    return (
       <SafeAreaView style={styles.safeAreaView}>
          <ScrollView contentContainerStyle={styles.scrollView}>
             <View style={{ alignItems: "center", marginTop: 26 }}>
-               <TitleLarge content={`Hello, ${username} :)`} />
+               <TitleLarge
+                  content={`Hello${username ? `, ${username}` : ""}`}
+               />
                <View style={styles.pictureContainer}>
                   <TouchableOpacity onPress={getFromLibrary}>
                      <MaterialIcons
@@ -158,7 +202,7 @@ const ProfileScreen = ({ setToken, setId, userToken, userId }) => {
                      source={
                         picture === null
                            ? require("../assets/no-avatar.png")
-                           : { uri: picture }
+                           : { uri: picture.uri }
                      }
                   />
                   <TouchableOpacity onPress={getFromCamera}>
@@ -176,7 +220,7 @@ const ProfileScreen = ({ setToken, setId, userToken, userId }) => {
                   type={"emailAddress"}
                   setFunction={setEmail}
                   value={email}
-                  setDisplayErrorMessage={setDisplayErrorMessage}
+                  setDisplayMessage={setDisplayMessage}
                   setIsInfoModified={setIsInfoModified}
                />
                <InputRegular
@@ -184,18 +228,18 @@ const ProfileScreen = ({ setToken, setId, userToken, userId }) => {
                   type={"username"}
                   setFunction={setUsername}
                   value={username}
-                  setDisplayErrorMessage={setDisplayErrorMessage}
+                  setDisplayMessage={setDisplayMessage}
                   setIsInfoModified={setIsInfoModified}
                />
                <InputLarge
                   placeholder={"describe yourself in a few words..."}
                   setFunction={setDescription}
                   value={description}
-                  setDisplayErrorMessage={setDisplayErrorMessage}
+                  setDisplayMessage={setDisplayMessage}
                   setIsInfoModified={setIsInfoModified}
                />
-               {displayErrorMessage && (
-                  <InlineErrorMessage content={displayErrorMessage} />
+               {displayMessage && (
+                  <InlineErrorMessage content={displayMessage} />
                )}
             </View>
             <View style={styles.buttonContainer}>
@@ -204,10 +248,12 @@ const ProfileScreen = ({ setToken, setId, userToken, userId }) => {
                      <ActivityIndicator color={red} />
                   </View>
                ) : (
-                  <TouchableOpacity style={styles.buttonBox1}>
-                     <Text style={styles.buttonText1} onPress={updateProfile}>
-                        Update
-                     </Text>
+                  <TouchableOpacity
+                     style={styles.buttonBox1}
+                     onPress={updateProfile}
+                     activeOpacity={0.5}
+                  >
+                     <Text style={styles.buttonText1}>Update</Text>
                   </TouchableOpacity>
                )}
                <TouchableOpacity

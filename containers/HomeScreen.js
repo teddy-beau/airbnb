@@ -10,14 +10,15 @@ import {
    ActivityIndicator,
    TouchableOpacity,
    SafeAreaView,
-   ScrollView,
    Dimensions,
 } from "react-native";
 import axios from "axios";
 import Constants from "expo-constants";
+
 // Colors:
 import colors from "../assets/colors";
 const { red, regularGrey, lightGrey, darkGrey, white, yellow } = colors;
+
 // Components:
 import StarRating from "../components/StarRating";
 
@@ -102,7 +103,7 @@ const width = Dimensions.get("window").width;
 const height = Dimensions.get("window").height;
 const styles = StyleSheet.create({
    screenContainer: {
-      // marginTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
+      marginTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
       height: "100%",
       backgroundColor: white,
    },

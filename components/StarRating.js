@@ -1,5 +1,6 @@
 import React from "react";
 import { Entypo } from "@expo/vector-icons";
+
 // Colors
 import colors from "../assets/colors";
 const { red, regularGrey, lightGrey, darkGrey, white, yellow } = colors;

@@ -29,6 +29,7 @@ const InputPassword = ({
             secureTextEntry={passwordVisible ? false : true}
             textContentType={type}
             value={value && value}
+            autoCapitalize="none"
          />
          {eyeSwitch && (
             <View style={[styles.input, { width: "10%" }]}>

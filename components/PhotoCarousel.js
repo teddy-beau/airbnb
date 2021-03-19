@@ -3,15 +3,13 @@ import { Image, Dimensions, StyleSheet, View } from "react-native";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
 
 const PhotoCarousel = ({ photos }) => {
-   // console.log(photos);
    return (
       <View style={styles.container}>
          <SwiperFlatList
             autoplay
             autoplayDelay={2}
-            autoplayLoop
             index={0}
-            showPagination
+            showPagination={false}
             data={photos}
             renderItem={({ item }) => (
                <View style={styles.child}>

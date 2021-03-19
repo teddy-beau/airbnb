@@ -7,12 +7,12 @@ import {
    StyleSheet,
    ActivityIndicator,
    SafeAreaView,
-   StatusBar,
    Dimensions,
 } from "react-native";
 import axios from "axios";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Constants from "expo-constants";
+
 // Colors:
 import colors from "../assets/colors";
 const { red, regularGrey, lightGrey, darkGrey, white } = colors;
@@ -59,7 +59,6 @@ export default function SignUpScreen({ setToken, setId }) {
                   setIsLoading(false);
                   setToken(response.data.token);
                   setId(response.data._id);
-                  // alert("Successfully signed up!");
                } else {
                   setIsLoading(false);
                   setDisplayErrorMessage(

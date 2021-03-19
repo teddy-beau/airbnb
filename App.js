@@ -4,9 +4,11 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons, Feather, AntDesign } from "@expo/vector-icons";
+
 // Colors:
 import colors from "./assets/colors";
 const { red, regularGrey, lightGrey, darkGrey, white } = colors;
+
 // Containers:
 import HomeScreen from "./containers/HomeScreen";
 import RoomScreen from "./containers/RoomScreen";
@@ -15,8 +17,10 @@ import SignInScreen from "./containers/SignInScreen";
 import SignUpScreen from "./containers/SignUpScreen";
 import ProfileScreen from "./containers/ProfileScreen";
 // Components:
+
 import Logo from "./components/Logo";
 
+// Navigation:
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -51,12 +55,12 @@ export default function App() {
       // Fetch the token from storage then navigate to our appropriate place
       const bootstrapAsync = async () => {
          // We should also handle error for production apps
-         const userToken = await AsyncStorage.getItem("userToken");
-
+         const getUserToken = await AsyncStorage.getItem("userToken");
+         const getUserId = await AsyncStorage.getItem("userId");
          // This will switch to the App screen or Auth screen and this loading screen will be unmounted and thrown away.
+         setUserToken(getUserToken);
+         setUserId(getUserId);
          setIsLoading(false);
-         setUserToken(userToken);
-         setUserId(userId);
       };
       bootstrapAsync();
    }, []);
@@ -84,13 +88,14 @@ export default function App() {
                            inactiveTintColor: regularGrey,
                         }}
                      >
+                        {/* HOME TAB */}
                         <Tab.Screen
                            name="Home"
                            options={{
                               tabBarLabel: "Home",
                               tabBarIcon: ({ color, size }) => (
-                                 <Ionicons
-                                    name={"ios-home-outline"}
+                                 <AntDesign
+                                    name={"home"}
                                     size={size}
                                     color={color}
                                  />
@@ -129,6 +134,8 @@ export default function App() {
                               </Stack.Navigator>
                            )}
                         </Tab.Screen>
+
+                        {/* AROUND ME TAB */}
                         <Tab.Screen
                            name="Around me"
                            options={{
@@ -174,6 +181,8 @@ export default function App() {
                               </Stack.Navigator>
                            )}
                         </Tab.Screen>
+
+                        {/* PROFILE TAB */}
                         <Tab.Screen
                            name="Profile"
                            options={{

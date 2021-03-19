@@ -8,8 +8,7 @@ const InputRegular = ({
    type,
    setFunction,
    value,
-   // setNewInformations,
-   setDisplayErrorMessage,
+   setDisplayMessage,
    setIsInfoModified,
 }) => {
    return (
@@ -19,13 +18,11 @@ const InputRegular = ({
          textContentType={type}
          keyboardType={type === "emailAddress" ? "email-address" : "default"}
          value={value && value}
+         autoCapitalize="none"
          onChangeText={(text) => {
             setFunction(text);
-            // if (setNewInformations) {
-            //    setNewInformations(true);
-            // }
-            if (setDisplayErrorMessage) {
-               setDisplayErrorMessage(false);
+            if (setDisplayMessage) {
+               setDisplayMessage(false);
             }
             if (setIsInfoModified) {
                setIsInfoModified(true);

@@ -2,13 +2,10 @@
 import React, { useState, useEffect } from "react";
 import {
    StyleSheet,
-   Image,
    Text,
    View,
    ActivityIndicator,
-   TouchableOpacity,
    SafeAreaView,
-   ScrollView,
    Alert,
    ImageBackground,
    Dimensions,
@@ -17,13 +14,12 @@ import axios from "axios";
 import Constants from "expo-constants";
 import * as Location from "expo-location";
 import MapView, { Callout } from "react-native-maps";
+
 // Colors:
 import colors from "../assets/colors";
 const { red, regularGrey, lightGrey, darkGrey, white, yellow } = colors;
-// Components:
 
 const AroundMeScreen = ({ navigation }) => {
-   // const [error, setError] = useState();
    const [data, setData] = useState();
    const [userCoords, setUserCoords] = useState({
       latitude: 48.856614,
@@ -53,10 +49,7 @@ const AroundMeScreen = ({ navigation }) => {
                response = await axios.get(
                   `https://express-airbnb-api.herokuapp.com/rooms/around?latitude=${userCoords.latitude}&longitude=${userCoords.longitude}`
                );
-               // setData(response.data);
-               // console.log("data", data);
             } else {
-               // setError(true);
                Alert.alert(
                   `Geolocation deactivated`,
                   `The following ads won't be based on your location. You can allow geolocation in your device's settings at any time for a better experience.`
@@ -65,8 +58,6 @@ const AroundMeScreen = ({ navigation }) => {
                response = await axios.get(
                   `https://express-airbnb-api.herokuapp.com/rooms/around`
                );
-               // setData(response.data);
-               // console.log("data", data);
             }
             let tab = [];
             for (let i = 0; i < response.data.length; i++) {
@@ -79,8 +70,6 @@ const AroundMeScreen = ({ navigation }) => {
                   price: response.data[i].price,
                });
             }
-            // console.log("tab", tab);
-
             setData(tab);
             setIsLoading(false);
          } catch (error) {
@@ -109,7 +98,6 @@ const AroundMeScreen = ({ navigation }) => {
                style={styles.mapContainer}
             >
                {data.map((ad) => {
-                  // console.log(ad);
                   return (
                      <MapView.Marker
                         key={ad._id}
@@ -152,7 +140,7 @@ const width = Dimensions.get("window").width;
 const height = Dimensions.get("window").height;
 const styles = StyleSheet.create({
    screenContainer: {
-      // marginTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
+      marginTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
       height: "100%",
       width: width,
       backgroundColor: white,

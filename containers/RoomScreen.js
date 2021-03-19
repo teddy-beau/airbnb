@@ -15,9 +15,11 @@ import axios from "axios";
 import Constants from "expo-constants";
 import { FontAwesome } from "@expo/vector-icons";
 import MapView from "react-native-maps";
+
 // Colors:
 import colors from "../assets/colors";
 const { red, regularGrey, lightGrey, darkGrey, white, yellow } = colors;
+
 // Components:
 import StarRating from "../components/StarRating";
 import PhotoCarousel from "../components/PhotoCarousel";
@@ -34,7 +36,6 @@ const RoomScreen = ({ route }) => {
             const response = await axios.get(
                `https://express-airbnb-api.herokuapp.com/rooms/${route.params.roomId}`
             );
-            // console.log(response.data);
             setData(response.data);
             setIsLoading(false);
          } catch (error) {
@@ -128,6 +129,7 @@ const RoomScreen = ({ route }) => {
                         latitude: data.location[1],
                         longitude: data.location[0],
                      }}
+                     image={require("../assets/pin.png")}
                   />
                </MapView>
             </ScrollView>
@@ -140,7 +142,7 @@ const width = Dimensions.get("window").width;
 const height = Dimensions.get("window").height;
 const styles = StyleSheet.create({
    safeAreaView: {
-      // marginTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
+      marginTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
       height: "100%",
       backgroundColor: white,
    },

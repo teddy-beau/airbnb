@@ -7,8 +7,7 @@ const InputLarge = ({
    placeholder,
    setFunction,
    value,
-   // setNewInformations,
-   setDisplayErrorMessage,
+   setDisplayMessage,
    setIsInfoModified,
 }) => {
    return (
@@ -19,11 +18,8 @@ const InputLarge = ({
          value={value && value}
          onChangeText={(text) => {
             setFunction(text);
-            // if (setNewInformations) {
-            //    setNewInformations(true);
-            // }
-            if (setDisplayErrorMessage) {
-               setDisplayErrorMessage(false);
+            if (setDisplayMessage) {
+               setDisplayMessage(false);
             }
             if (setIsInfoModified) {
                setIsInfoModified(true);
