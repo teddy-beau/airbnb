@@ -10,7 +10,7 @@ React Native frontend project inspired by the Airbnb mobile app.
 
 ## Features & Stack
 
-### Main feature
+### Main features
 
 -  User authentication (login/signup)
 -  Browsing through the list of offers
@@ -18,12 +18,15 @@ React Native frontend project inspired by the Airbnb mobile app.
 -  Around me interactive map using geolocation
 -  User profile (profile picture upload from camera and library, user information update)
 
-### Stack used
+### Stack and main packages
 
--  React Native
--  Expo
--  Mapview (React Native map)
--  Image picker
+-  React Native with Expo
+-  async-storage
+-  axios
+-  expo-image-picker
+-  expo-location
+-  react-native-maps (Mapview)
+-  react-native-swiper-flatlist
 -  relying on an external API from [Le Reacteur](https://github.com/lereacteur/express-airbnb) for the data
 
 ## Screenshots
